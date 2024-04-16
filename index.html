@@ -16,7 +16,7 @@
     const pwg = new PasswordGenerator();
     function generatePassword() {
         // Get the password length and security level from the input fields
-        let passwordLength = $("#passwordLength").val() != "" ? $("#passwordLength").val() : 8;
+        let passwordLength = $("#passwordLength").val() != "" && $("#passwordLength").val() <= 1000000? $("#passwordLength").val() : 8;
         let securityLevel = $("#securityLevel").val() != "" ? $("#securityLevel").val() : 3;
         // Generate a password using the PasswordGenerator class
         let generatedPassword = pwg.generate(passwordLength, securityLevel);
@@ -84,7 +84,7 @@
                         <tbody>
                             <tr>
                                 <td><label for="passwordLength">Password length:</label></td>
-                                <td><input type="number" id="passwordLength" value="8" min="1"></td>
+                                <td><input type="number" id="passwordLength" value="8" min="1" max="1000000"></td>
                             </tr>
                             <tr>
                                 <td><label for="securityLevel">Security level:</label></td>
