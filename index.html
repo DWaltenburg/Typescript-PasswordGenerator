@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="PasswordGenerator.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+</head>
+<script>
+    const pwg = new PasswordGenerator();
+    function generatePassword() {
+        // Get the password length and security level from the input fields
+        let passwordLength = $("#passwordLength").val() != "" ? $("#passwordLength").val() : 8;
+        let securityLevel = $("#securityLevel").val() != "" ? $("#securityLevel").val() : 3;
+        // Generate a password using the PasswordGenerator class
+        let generatedPassword = pwg.generate(passwordLength, securityLevel);
+        // Add the generated password to the table
+        $("#generatedPasswords tbody").append(generateTableRow(generatedPassword));
+    }
+    
+    function generateTableRow(password) {
+        return "<tr><td>" + password + "</td><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td></tr>";
+    }
+    $(document).on("click", ".delete-button", function(e) {
+        $(e.target).closest("tr").remove();
+    });
+    $(document).on("click", ".copy-button", function(e) {
+
+        // Get the password from the first cell of the row
+        let password = $(e.target).closest("tr").find("td").first().text();
+        // Copy the password to the clipboard
+        navigator.clipboard.writeText(password);
+
+        // Change the text of the button to "Copied!" for a second
+        // and then change it back to "Copy"
+        // Also change the color of the button to green
+        // and then change it back to the default color
+        $(e.target).text("Copied!").removeClass("btn-light").addClass("btn-success");
+    
+        setTimeout(() => {
+            $(e.target).text("Copy").removeClass("btn-success").addClass("btn-light");
+        }, 1000);
+    });
+</script>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h1>Password Generator</h1>
+                <div class="form-group">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Security Level</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>Includes lower case letters only </td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>Includes previous security levels and may include uppercase letters</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Includes previous security levels and may include numbers</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Includes previous security levels and may include special characters</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td><label for="passwordLength">Password length:</label></td>
+                                <td><input type="number" id="passwordLength" value="8" min="1"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="securityLevel">Security level:</label></td>
+                                <td><input type="number" id="securityLevel" value="0" min="0"></td>
+                            </tr>
+                            
+                        </tbody>
+                        
+                    </table>
+                    
+                </div>
+                <button type="button" class="btn btn-primary" onclick="generatePassword()">Generate Password</button>
+                <h2>Generated passwords:</h2>
+                <table class="table" id="generatedPasswords">
+                    <tbody>
+                    </tbody>
+                </table>
+</body>
+</html>
