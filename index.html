@@ -45,6 +45,8 @@
     }
     
     function generateTableRow(password) {
+        //escape the password
+        password = password.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
         return "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td><span class='d-inline-block text-truncate' style='max-width:70svw;'>" + password + "</span></td></tr>";
     }
     $(document).on("click", ".delete-button", function(e) {
