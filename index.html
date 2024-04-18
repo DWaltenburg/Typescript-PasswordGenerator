@@ -47,7 +47,7 @@
     function generateTableRow(password) {
         //escape the password
         password = password.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        return "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td><span class='d-inline-block text-truncate' style='max-width:70svw;'>" + password + "</span></td></tr>";
+        return "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td class='password'<span class='d-inline-block text-truncate' style='max-width:70svw;'>" + password + "</span></td></tr>";
     }
     $(document).on("click", ".delete-button", function(e) {
         $(e.target).closest("tr").remove();
@@ -55,7 +55,7 @@
     $(document).on("click", ".copy-button", function(e) {
 
         // Get the password from the first cell of the row
-        let password = $(e.target).closest("tr").find("td").first().text();
+        let password = $(e.target).closest("tr").find("td.password").text();
         // Copy the password to the clipboard
         navigator.clipboard.writeText(password);
 
