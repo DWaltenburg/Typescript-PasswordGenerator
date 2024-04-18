@@ -21,6 +21,7 @@
   </head>
   <script>
     const pwg = new PasswordGenerator();
+    let passwordsCount = 0;
     function generatePassword() {
       let alerted = false;
       //warn no level selected
@@ -46,7 +47,10 @@
         );
         alerted = true;
       }
-
+      // set timeout to remove alert
+      setTimeout(() => {
+        $("#inputAlertContainer").empty();
+      }, 5000);
       if (alerted) return;
 
       // Get the password length and security level from the input fields
@@ -55,20 +59,37 @@
       // Generate a password using the PasswordGenerator class
       let generatedPassword = pwg.generate(passwordLength, securityLevel);
       // Add the generated password to the table
-      $("#generatedPasswords tbody").append(
+      $("#generatedPasswords tbody").prepend(
         generateTableRow(generatedPassword)
       );
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+      });
+
+      $("#generatedPasswords tbody tr:first-child")
+        .addClass("table-success")
+        .attr("id", "password" + passwordsCount++);
+      createTimeout(passwordsCount - 1);
+    }
+    function createTimeout(passwordId) {
+      setTimeout(() => {
+        $("#password" + passwordId).removeClass("table-success");
+      }, 1000);
     }
 
     function generateTableRow(password) {
       //escape the password
-      password = password
+      password.value = password.value
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
       return (
-        "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td class='password'><span class='d-inline-block text-truncate' style='max-width:70svw;'>" +
-        password +
+        "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td class='password'><span class='d-inline-block text-truncate' style='max-width:70svw;' data-toggle='tooltip' data-placement='top' title='Password Length: " +
+        password.length +
+        ". Security Level: " +
+        password.securityLevel +
+        ".'>" +
+        password.value +
         "</span></td></tr>"
       );
     }

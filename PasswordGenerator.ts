@@ -19,7 +19,7 @@ class PasswordGenerator {
         this.securityLevel = 3;
     }
 
-    generate(length?:number, securityLevel?:number): string {
+    generate(length?:number, securityLevel?:number): Password {
         // If the length or securityLevel is provided, update the values
         if(length !== undefined && length > 0) this.length = length;
         if(securityLevel !== undefined && securityLevel > -1) this.securityLevel = securityLevel;
@@ -45,10 +45,21 @@ class PasswordGenerator {
         }
 
         // The password is built by randomly selecting characters from the charset
-        let password = "";
+        let password: Password = {
+            length: this.length,
+            charset: charset,
+            securityLevel: this.securityLevel,
+            value: ""
+        };
         for (let i = 0; i < this.length; i++) {
-            password += charset.charAt(Math.floor(Math.random() * charset.length));
+            password.value += charset.charAt(Math.floor(Math.random() * charset.length));
         }
         return password;
     }
+}
+class Password {
+    length: number;
+    charset: string;
+    securityLevel: number;
+    value: string;
 }

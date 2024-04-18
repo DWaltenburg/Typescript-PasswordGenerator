@@ -15,9 +15,9 @@ var PasswordGenerator = /** @class */ (function () {
     }
     PasswordGenerator.prototype.generate = function (length, securityLevel) {
         // If the length or securityLevel is provided, update the values
-        if (length !== undefined && length > 0 && length !== "")
+        if (length !== undefined && length > 0)
             this.length = length;
-        if (securityLevel !== undefined && securityLevel > -1 && securityLevel !== "")
+        if (securityLevel !== undefined && securityLevel > -1)
             this.securityLevel = securityLevel;
         // The charset is a string that contains all the characters that can be used in the password
         // The charset is built based on the security level
@@ -39,12 +39,22 @@ var PasswordGenerator = /** @class */ (function () {
             charset += this.SPECIAL_CHARACTERS;
         }
         // The password is built by randomly selecting characters from the charset
-        var password = "";
+        var password = {
+            length: this.length,
+            charset: charset,
+            securityLevel: this.securityLevel,
+            value: ""
+        };
         for (var i = 0; i < this.length; i++) {
-            password += charset.charAt(Math.floor(Math.random() * charset.length));
+            password.value += charset.charAt(Math.floor(Math.random() * charset.length));
         }
         return password;
     };
     return PasswordGenerator;
+}());
+var Password = /** @class */ (function () {
+    function Password() {
+    }
+    return Password;
 }());
 //# sourceMappingURL=PasswordGenerator.js.map
