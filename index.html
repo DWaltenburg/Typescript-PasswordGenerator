@@ -45,7 +45,7 @@
     }
     
     function generateTableRow(password) {
-        return "<tr><td><span class='d-inline-block text-truncate' style='max-width:40svw;'>" + password + "</span></td><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td></tr>";
+        return "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td><span class='d-inline-block text-truncate' style='max-width:70svw;'>" + password + "</span></td></tr>";
     }
     $(document).on("click", ".delete-button", function(e) {
         $(e.target).closest("tr").remove();
@@ -157,7 +157,7 @@
                     <button type="button" class="btn btn-primary" onclick="generatePassword()">Generate Password</button>
                 </div>
                 <h2>Generated passwords</h2>
-                <table class="table" id="generatedPasswords">
+                <table class="table w-auto" id="generatedPasswords">
                     <tbody>
                     </tbody>
                 </table>
