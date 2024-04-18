@@ -1,170 +1,271 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Password Generator</title>
     <script src="PasswordGenerator.js"></script>
     <script src="BootstrapThemeSwitch.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-        crossorigin="anonymous"></script>
-</head>
-<script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <script>
     const pwg = new PasswordGenerator();
     function generatePassword() {
-        let alerted = false;
-        //warn no level selected
-        if ($("#securityLevel").val() == "Choose...") {
-            $("#inputAlertContainer").append(generateDangerAlert("Please select a security level."));
-            alerted = true;
-        }
-        // alert no length selected
-        if ($("#passwordLength").val() == "" || $("#passwordLength").val() <= 0) {
-            $("#inputAlertContainer").append(generateDangerAlert("Please enter a positive password length."));
-            alerted = true;
-        }
-        // alert length is too long
-        if ($("#passwordLength").val() > 1000000) {
-            $("#inputAlertContainer").append(generateDangerAlert("Please enter a password length less than 1,000,000."));
-            alerted = true;
-        }
+      let alerted = false;
+      //warn no level selected
+      if ($("#securityLevel").val() == "Choose...") {
+        $("#inputAlertContainer").append(
+          generateDangerAlert("Please select a security level.")
+        );
+        alerted = true;
+      }
+      // alert no length selected
+      if ($("#passwordLength").val() == "" || $("#passwordLength").val() <= 0) {
+        $("#inputAlertContainer").append(
+          generateDangerAlert("Please enter a positive password length.")
+        );
+        alerted = true;
+      }
+      // alert length is too long
+      if ($("#passwordLength").val() > 1000000) {
+        $("#inputAlertContainer").append(
+          generateDangerAlert(
+            "Please enter a password length less than 1,000,000."
+          )
+        );
+        alerted = true;
+      }
 
-        if (alerted) return;
-        
-        // Get the password length and security level from the input fields
-        let passwordLength = $("#passwordLength").val();
-        let securityLevel = $("#securityLevel").val();
-        // Generate a password using the PasswordGenerator class
-        let generatedPassword = pwg.generate(passwordLength, securityLevel);
-        // Add the generated password to the table
-        $("#generatedPasswords tbody").append(generateTableRow(generatedPassword));
+      if (alerted) return;
+
+      // Get the password length and security level from the input fields
+      let passwordLength = $("#passwordLength").val();
+      let securityLevel = $("#securityLevel").val();
+      // Generate a password using the PasswordGenerator class
+      let generatedPassword = pwg.generate(passwordLength, securityLevel);
+      // Add the generated password to the table
+      $("#generatedPasswords tbody").append(
+        generateTableRow(generatedPassword)
+      );
     }
-    
+
     function generateTableRow(password) {
-        //escape the password
-        password = password.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        return "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td class='password'><span class='d-inline-block text-truncate' style='max-width:70svw;'>" + password + "</span></td></tr>";
+      //escape the password
+      password = password
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      return (
+        "<tr><td><button type='button' class='btn btn-light copy-button'>Copy</button><button type='button' class='btn btn-danger delete-button'>Delete</button></td><td class='password'><span class='d-inline-block text-truncate' style='max-width:70svw;'>" +
+        password +
+        "</span></td></tr>"
+      );
     }
-    $(document).on("click", ".delete-button", function(e) {
-        $(e.target).closest("tr").remove();
+    $(document).on("click", ".delete-button", function (e) {
+      $(e.target).closest("tr").remove();
     });
-    $(document).on("click", ".copy-button", function(e) {
+    $(document).on("click", ".copy-button", function (e) {
+      // Get the password from the first cell of the row
+      let password = $(e.target).closest("tr").find("td.password").text();
+      // Copy the password to the clipboard
+      navigator.clipboard.writeText(password);
 
-        // Get the password from the first cell of the row
-        let password = $(e.target).closest("tr").find("td.password").text();
-        // Copy the password to the clipboard
-        navigator.clipboard.writeText(password);
+      // Change the text of the button to "Copied!" for a second
+      // and then change it back to "Copy"
+      // Also change the color of the button to green
+      // and then change it back to the default color
+      $(e.target)
+        .text("Copied!")
+        .removeClass("btn-light")
+        .addClass("btn-success");
 
-        // Change the text of the button to "Copied!" for a second
-        // and then change it back to "Copy"
-        // Also change the color of the button to green
-        // and then change it back to the default color
-        $(e.target).text("Copied!").removeClass("btn-light").addClass("btn-success");
-    
-        setTimeout(() => {
-            $(e.target).text("Copy").removeClass("btn-success").addClass("btn-light");
-        }, 1000);
+      setTimeout(() => {
+        $(e.target)
+          .text("Copy")
+          .removeClass("btn-success")
+          .addClass("btn-light");
+      }, 1000);
     });
     function generateDangerAlert(message) {
-        return "<div class='alert alert-danger d-flex align-items-center alert-dismissible fade show' role='alert'><svg class='bi flex-shrink-0 me-2' width='24' height='24' role='img' aria-label='Danger:''><use xlink:href='#exclamation-triangle-fill'/></svg><div>" + message + "</div><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>";
+      return (
+        "<div class='alert alert-danger d-flex align-items-center alert-dismissible fade show' role='alert'><svg class='bi flex-shrink-0 me-2' width='24' height='24' role='img' aria-label='Danger:''><use xlink:href='#exclamation-triangle-fill'/></svg><div>" +
+        message +
+        "</div><button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button></div>"
+      );
     }
-</script>
-<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  </script>
+  <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
     <symbol id="check-circle-fill" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+      <path
+        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"
+      />
     </symbol>
     <symbol id="info-fill" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"/>
+      <path
+        d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm.93-9.412-1 4.705c-.07.34.029.533.304.533.194 0 .487-.07.686-.246l-.088.416c-.287.346-.92.598-1.465.598-.703 0-1.002-.422-.808-1.319l.738-3.468c.064-.293.006-.399-.287-.47l-.451-.081.082-.381 2.29-.287zM8 5.5a1 1 0 1 1 0-2 1 1 0 0 1 0 2z"
+      />
     </symbol>
-    <symbol id="exclamation-triangle-fill" fill="currentColor" viewBox="0 0 16 16">
-      <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+    <symbol
+      id="exclamation-triangle-fill"
+      fill="currentColor"
+      viewBox="0 0 16 16"
+    >
+      <path
+        d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+      />
     </symbol>
-</svg>
-<body>
+  </svg>
+  <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">Password Generator</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                Theme
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" type="button" data-bs-theme-value="auto">Auto</button></li>
-                                <li><button class="dropdown-item" type="button" data-bs-theme-value="light">Light</button></li>
-                                <li><button class="dropdown-item" type="button" data-bs-theme-value="dark">Dark</button></li>
-                            </ul>
-                        </div>
-                    </li>
+      <div class="container">
+        <a class="navbar-brand" href="#">Password Generator</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <div class="btn-group">
+                <button
+                  type="button"
+                  class="btn btn-secondary dropdown-toggle"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  Theme
+                </button>
+                <ul class="dropdown-menu">
+                  <li>
+                    <button
+                      class="dropdown-item"
+                      type="button"
+                      data-bs-theme-value="auto"
+                    >
+                      Auto
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="dropdown-item"
+                      type="button"
+                      data-bs-theme-value="light"
+                    >
+                      Light
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      class="dropdown-item"
+                      type="button"
+                      data-bs-theme-value="dark"
+                    >
+                      Dark
+                    </button>
+                  </li>
                 </ul>
-            </div>
+              </div>
+            </li>
+          </ul>
         </div>
+      </div>
     </nav>
 
     <div class="container">
-        <div class="row">
-            <div class="col-12">
-                <h1>Password Generator</h1>
-                <p>Generate a password with the desired length and security level.</p>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Security Level</th>
-                            <th>Description</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>0</td>
-                            <td>Includes lower case letters only </td>
-                        </tr>
-                        <tr>
-                            <td>1</td>
-                            <td>Includes previous security levels and may include uppercase letters</td>
-                        </tr>
-                        <tr>
-                            <td>2</td>
-                            <td>Includes previous security levels and may include numbers</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>Includes previous security levels and may include special characters</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <h2>Generate a password</h2>
-                <div id="inputAlertContainer"></div>
-                <div class="input-group">
-                    <label class="input-group-text" for="passwordLength">Password length:</label>
-                    <input type="number" class="form-control" id="passwordLength" value="8" min="1" max="1000000">
-                    <label class="input-group-text" for="securityLevel">Security level:</label>
-                    <select class="form-select" id="securityLevel">
-                        <option selected>Choose...</option>
-                        <option value="0">Level 0: Lowercase</option>
-                        <option value="1">Level 1: Uppercase</option>
-                        <option value="2">Level 2: Numbers</option>
-                        <option value="3">Level 3: Special Characters</option>
-                    </select>
-                    <button type="button" class="btn btn-primary" onclick="generatePassword()">Generate Password</button>
-                </div>
-                <h2>Generated passwords</h2>
-                <table class="table w-auto" id="generatedPasswords">
-                    <tbody>
-                    </tbody>
-                </table>
-            </div>
+      <div class="row">
+        <div class="col-12">
+          <h1>Password Generator</h1>
+          <p>Generate a password with the desired length and security level.</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Security Level</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>0</td>
+                <td>Includes lower case letters only</td>
+              </tr>
+              <tr>
+                <td>1</td>
+                <td>
+                  Includes previous security levels and may include uppercase
+                  letters
+                </td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>
+                  Includes previous security levels and may include numbers
+                </td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>
+                  Includes previous security levels and may include special
+                  characters
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>Generate a password</h2>
+          <div id="inputAlertContainer"></div>
+          <div class="input-group">
+            <label class="input-group-text" for="passwordLength"
+              >Password length:</label
+            >
+            <input
+              type="number"
+              class="form-control"
+              id="passwordLength"
+              value="8"
+              min="1"
+              max="1000000"
+            />
+            <label class="input-group-text" for="securityLevel"
+              >Security level:</label
+            >
+            <select class="form-select" id="securityLevel">
+              <option selected>Choose...</option>
+              <option value="0">Level 0: Lowercase</option>
+              <option value="1">Level 1: Uppercase</option>
+              <option value="2">Level 2: Numbers</option>
+              <option value="3">Level 3: Special Characters</option>
+            </select>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="generatePassword()"
+            >
+              Generate Password
+            </button>
+          </div>
+          <h2>Generated passwords</h2>
+          <table class="table w-auto" id="generatedPasswords">
+            <tbody></tbody>
+          </table>
         </div>
+      </div>
     </div>
-</body>
+  </body>
 </html>
